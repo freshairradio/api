@@ -4,8 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "dev": "rollup -c -w",
-    "build": "rollup -c",
+    "db-init": "ENTRYPOINT=src/construct.ts rollup -c && node dist/construct.js",
+    "dev": "ENTRYPOINT=src/index.ts rollup -c -w",
+    "build": "ENTRYPOINT=src/index.ts rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,9 +16,27 @@
     "@rollup/plugin-node-resolve": "^8.4.0",
     "@rollup/plugin-run": "^2.0.2",
     "@rollup/plugin-typescript": "^5.0.2",
+    "builtin-modules": "^3.1.0",
+    "rimraf": "^3.0.2",
     "rollup": "^2.23.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
     "rollup-plugin-terser": "^6.1.0",
     "tslib": "^2.0.0",
     "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@rollup/plugin-json": "^4.1.0",
+    "@sqorn/pg": "0.0.45",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.0.1",
+    "knex": "^0.21.2",
+    "mikro-orm": "^3.6.15",
+    "moment": "^2.27.0",
+    "node-fetch": "^2.6.0",
+    "pg": "^8.3.0",
+    "rollup-plugin-consts": "^1.0.2",
+    "uuid": "^8.3.0"
   }
 }
