@@ -11,11 +11,24 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       PORT: ${PORT}
       PAT: ${PAT}
+      SHARED_API_SECRET: ${SHARED_API_SECRET}
+      WORKER: 'http://worker:8086/process'
     ports:
       - ${PORT}:${PORT}
     volumes:
       - ./:/app
     restart: always
+  worker:
+    build:
+      context: ../audioprocessing
+      # dockerfile: ../audioprocessing/Dockerfile
+    restart: always
+    volumes:
+      - ../audioprocessing/:/src
+      - /src/node_modules
+    environment:
+      SHARED_API_SECRET: ${SHARED_API_SECRET}
+      PORT: 8086
   db:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}

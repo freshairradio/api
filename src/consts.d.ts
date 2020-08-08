@@ -18,3 +18,8 @@ declare module 'consts:pat' {
   const token: string
   export default token
 }
+
+declare module 'consts:shared_api_secret' {
+  const token: string
+  export default token
+}

@@ -1,3 +1,4 @@
+import { User } from '../users/routes'
 export interface BaseShow {
   title: string
   description: string
@@ -9,6 +10,10 @@ export interface Show extends BaseShow {
   identifier: string
   created: moment.Moment
   updated: moment.Moment
+}
+export interface InflatedShow extends Show {
+  users: User[]
+  episodes: Episode[]
 }
 export interface BaseEpisode {
   title: string

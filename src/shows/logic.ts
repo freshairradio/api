@@ -4,12 +4,17 @@ import {
   ShowLink,
   BaseEpisode,
   Episode,
-  EpisodeLink
+  EpisodeLink,
+  InflatedShow
 } from './types'
+import Podcast from 'podcast'
 import { multiple, sql, single } from '../db'
 import { v4 } from 'uuid'
 import moment from 'moment'
 import pat from 'consts:pat'
+import { Octokit } from '@octokit/core'
+import fetch from 'node-fetch'
+const octokit = new Octokit({ auth: pat })
 export const getAllForUser = async (userId: string): Promise<Show[]> => {
   return await multiple(
     sql`select 
@@ -28,10 +33,11 @@ export const getAllForUser = async (userId: string): Promise<Show[]> => {
           where
             users.identifier=${userId}
           group by
-            shows.identifier`
+            shows.identifier
+            `
   )
 }
-export const getBySlug = async (slug: string): Promise<Show[]> => {
+export const getBySlug = async (slug: string): Promise<InflatedShow> => {
   return await single(
     sql`select 
               shows.*, 
@@ -147,7 +153,15 @@ export const createEpisode = async (
   )
   return inserted
 }
+export const deleteEpisode = async (episodeId: string): Promise<Episode> => {
+  await single(sql`delete from link_show_episode where episode=${episodeId}`)
+
+  return await single(
+    sql`delete from episodes where identifier=${episodeId} returning *`
+  )
+}
 export const updateEpisode = async (
+  showId: string,
   episodeId: string,
   { title, description, slug, audio, meta = {} }: BaseEpisode
 ): Promise<Episode> => {
@@ -161,7 +175,20 @@ export const updateEpisode = async (
     !currentEpisode.audio
   ) {
     newAudio = audio
-    newMeta = { published: false, last: currentEpisode.meta }
+    newMeta = {
+      published: false,
+      ...(currentEpisode.meta.published ? { last: currentEpisode.meta } : {})
+    }
+    fetch(process.env.WORKER, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        audio,
+        update_url: `http://app:${process.env.PORT}/shows/${showId}/episodes/${episodeId}/meta`
+      })
+    })
   }
   const updated: Episode = await single(
     sql`update episodes
@@ -179,8 +206,73 @@ export const updateEpisode = async (
   return updated
 }
 
-export const getRSSBySlug = async (slug: string): Promise<string> => {
-  const show = await getBySlug(slug)
+export const superSetMeta = async (
+  episodeId: string,
+  { meta = {} }: BaseEpisode
+): Promise<Episode> => {
+  const updated: Episode = await single(
+    sql`update episodes
+            set 
+              meta=${meta}
+            where
+              episodes.identifier=${episodeId}
+            returning *`
+  )
+  return updated
+}
 
-  return 'null'
+export const getRSSBySlug = async (slug: string): Promise<string> => {
+  const { title, description, picture, meta, episodes } = await getBySlug(slug)
+
+  const feed = new Podcast({
+    title: title,
+    description,
+    feed_url: `https://api.freshair.radio/shows/${slug}/rss`,
+    site_url: `https://freshair.radio/shows/${slug}`,
+    image_url: picture,
+    author: `Freshair Radio`,
+    language: 'en',
+    ttl: '60',
+    itunesAuthor: `Freshair Radio`,
+    itunesSummary: description,
+    itunesOwner: { name: 'Freshair', email: 'manager@freshair.org.uk' },
+    itunesExplicit: false,
+    itunesCategory: [meta.category].filter(Boolean).map((c) => ({ text: c })),
+    itunesImage: picture
+  })
+  await Promise.all(
+    episodes
+      .filter((e) => e.meta.published || (e.meta.last && e.meta.last.published))
+      .map(
+        async ({
+          identifier: epIdent,
+          title,
+          created,
+          description,
+          audio,
+          meta
+        }) => {
+          console.log(meta)
+          feed.addItem({
+            title: title,
+            itunesTitle: title,
+            itunesAuthor: `Freshair Radio`,
+
+            description: description,
+            url: `https://freshair.radio/shows/${slug}#episode-${epIdent}`,
+            enclosure: {
+              url: meta.audio,
+              type: 'audio/mpeg',
+              size: Math.round(meta.length)
+            }, // optional enclosure
+            date: created, // any format that js Date can parse.
+            itunesExplicit: false,
+            itunesSummary: description,
+            itunesDuration: Math.round(meta.length)
+          })
+        }
+      )
+  )
+
+  return feed.buildXml()
 }

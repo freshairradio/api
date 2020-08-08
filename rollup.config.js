@@ -27,7 +27,8 @@ export default {
     consts({
       database: process.env.DATABASE_URL,
       port: process.env.PORT,
-      pat: process.env.PAT
+      pat: process.env.PAT,
+      shared_api_secret: process.env.SHARED_API_SECRET
     }),
     commonjs(),
     resolve(),

@@ -3,7 +3,7 @@ import { single, multiple, sql } from '../db'
 import moment from 'moment'
 import { v4 } from 'uuid'
 const router = Router()
-interface User {
+export interface User {
   identifier: string
   name: string
   username: string
