@@ -1,7 +1,6 @@
 import express from 'express'
 import userRoutes from './users/routes'
 import showRoutes from './shows/routes'
-import port from 'consts:port'
 import shared_api_secret from 'consts:shared_api_secret'
 import fetch from 'node-fetch'
 import cors from 'cors'
@@ -33,4 +32,4 @@ app.use(async (req, res, next) => {
 })
 app.use(`/users`, userRoutes)
 app.use(`/shows`, showRoutes)
-app.listen(port)
+app.listen(process.env.PORT)
