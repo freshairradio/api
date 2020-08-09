@@ -48,3 +48,12 @@ jobs:
 
           docker push $IMAGE_ID:${{ github.sha }}
           docker push $IMAGE_ID:$VERSION
+          
+      - name: Deploy to swarm
+        uses: sagebind/docker-swarm-deploy-action@v2
+        with:
+          # Docker host to connect to
+          remote_host: ssh://penalosa@deployment_host.freshair.radio
+          # SSH public key of the server
+          ssh_public_key: ${{ secrets.public_key }}
+          ssh_private_key: ${{ secrets.private_key }}
