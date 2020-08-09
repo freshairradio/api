@@ -64,7 +64,7 @@ jobs:
           chmod 400 $HOME/.ssh/id_rsa
           echo "${{ secrets.deploy_host_keys }}" >> ~/.ssh/known_hosts
           echo "${{ secrets.GITHUB_TOKEN }}" | docker --log-level debug --host ${{ secrets.deploy_host }} login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-          docker --log-level debug --host ${{ secrets.deploy_host }} --with-registry-auth stack deploy -c swarm.stack.yml $IMAGE_NAME
+          docker --log-level debug --host ${{ secrets.deploy_host }} stack deploy --with-registry-auth -c swarm.stack.yml $IMAGE_NAME
 #       - name: Deploy to swarm
 #         uses: sagebind/docker-swarm-deploy-action@v2
 #         with:
