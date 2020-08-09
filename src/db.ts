@@ -1,7 +1,7 @@
 import { Pool, types } from 'pg'
 import moment from 'moment'
 import fs from 'fs'
-const DATABASE_URL = fs.readFileSync('/run/secrets/database_url', 'utf-8')
+const DATABASE_URL = process.env.DATABASE_URL
 types.setTypeParser(types.builtins.TIMESTAMPTZ, (v) =>
   v === null ? null : moment(v)
 )
