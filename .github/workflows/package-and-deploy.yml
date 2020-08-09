@@ -56,6 +56,7 @@ jobs:
           echo "Host *
             StrictHostKeyChecking no" > $HOME/.ssh/config
           echo "${{ secrets.private_key }}" > $HOME/.ssh/id_rsa
+          chmod 400 $HOME/.ssh/id_rsa
           echo "${{ secrets.deploy_host_keys }}" >> ~/.ssh/known_hosts
           docker --log-level debug --host ${{ secrets.deploy_host }} stack deploy -c swarm.stack.yml $IMAGE_NAME
 #       - name: Deploy to swarm
