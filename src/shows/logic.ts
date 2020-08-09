@@ -11,10 +11,7 @@ import Podcast from 'podcast'
 import { multiple, sql, single } from '../db'
 import { v4 } from 'uuid'
 import moment from 'moment'
-import pat from 'consts:pat'
-import { Octokit } from '@octokit/core'
 import fetch from 'node-fetch'
-const octokit = new Octokit({ auth: pat })
 export const getAllForUser = async (userId: string): Promise<Show[]> => {
   return await multiple(
     sql`select 

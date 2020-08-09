@@ -10,7 +10,6 @@ import {
   superSetMeta,
   deleteEpisode
 } from './logic'
-import pat from 'consts:pat'
 const router = Router()
 
 router.get(`/`, async (req, res) => {
