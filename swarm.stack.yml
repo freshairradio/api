@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  content-api:
+    image: content-api:lato
+    ports:
+      - '5009:5000'
+    secrets:
+      - database_url
+    environment:
+      PORT: ${PORT}
+      WORKER: 'http://worker:8086/process'
+secrets:
+  database_url:
+    external: true

@@ -1,16 +1,17 @@
 import { Pool, types } from 'pg'
-import database from 'consts:database'
 import moment from 'moment'
-
+import fs from 'fs'
+const DATABASE_URL = fs.readFileSync('/run/secrets/database_url', 'utf-8')
 types.setTypeParser(types.builtins.TIMESTAMPTZ, (v) =>
   v === null ? null : moment(v)
 )
 types.setTypeParser(types.builtins.TIMESTAMP, (v) =>
   v === null ? null : moment(v)
 )
-
+console.log(DATABASE_URL)
 const pool = new Pool({
-  connectionString: database
+  connectionString: DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 })
 const queryDB = async (query, params) => {
   return await pool.query(query, params)
