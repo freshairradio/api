@@ -53,6 +53,7 @@ jobs:
         
       - name: Deploy App
         run: |
+          set -x
           IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
 
           # Change all uppercase to lowercase
