@@ -51,7 +51,7 @@ jobs:
       - name: Deploy to Swarm
         run: |
           export LATEST_IMAGE="$IMAGE_ID:${{ github.sha }}"
-
+          eval $(ssh-agent -s)
           ssh-add - <<< "${{ secrets.private_key }}"
           docker --host ssh://penalosa@deployment_host.freshair.radio stack deploy -c swarm.stack.yml
 #       - name: Deploy to swarm
