@@ -53,6 +53,8 @@ jobs:
         run: |
           export LATEST_IMAGE="$IMAGE_ID:${{ github.sha }}"
           mkdir -p ~/.ssh
+          echo "Host *
+            StrictHostKeyChecking no" > $HOME/.ssh/config
           echo "${{ secrets.private_key }}" > $HOME/.ssh/id_rsa
           echo "${{ secrets.deploy_host_keys }}" >> ~/.ssh/known_hosts
           docker --log-level debug --host ${{ secrets.deploy_host }} stack deploy -c swarm.stack.yml $IMAGE_NAME
