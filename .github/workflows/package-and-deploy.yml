@@ -78,7 +78,7 @@ jobs:
           
           ASSIGNED_PORT=`docker --log-level debug --host ${{ secrets.deploy_host }} inspect --format='{{(index (index .NetworkSettings.Ports "5000/tcp") 0).HostPort}}' $(cat /tmp/new-id)`
           
-          ssh ${{ secrets.deploy_host }} node scripts/sync-caddy.js $ASSIGNED_PORT $DOMAIN
+          ssh ${{ secrets.deploy_host }} "/home/penalosa/.nvm/versions/node/v14.7.0/bin/node scripts/sync-caddy.js $ASSIGNED_PORT $DOMAIN"
           echo $ASSIGNED_PORT
           
           
