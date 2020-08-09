@@ -48,12 +48,23 @@ jobs:
 
           docker push $IMAGE_ID:${{ github.sha }}
           docker push $IMAGE_ID:$VERSION
+          export LATEST_IMAGE="$IMAGE_ID:${{ github.sha }}"
+        
       - name: Deploy to Swarm
         run: |
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          export IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           export LATEST_IMAGE="$IMAGE_ID:${{ github.sha }}"
-          eval $(ssh-agent -s)
-          ssh-add - <<< "${{ secrets.private_key }}"
-          docker --host ssh://penalosa@deployment_host.freshair.radio stack deploy -c swarm.stack.yml
+          mkdir -p ~/.ssh
+          echo "Host *
+            StrictHostKeyChecking no" > $HOME/.ssh/config
+          echo "${{ secrets.private_key }}" > $HOME/.ssh/id_rsa
+          chmod 400 $HOME/.ssh/id_rsa
+          echo "${{ secrets.deploy_host_keys }}" >> ~/.ssh/known_hosts
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker --log-level debug --host ${{ secrets.deploy_host }} login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+          docker --log-level debug --host ${{ secrets.deploy_host }} stack deploy --with-registry-auth -c swarm.stack.yml $IMAGE_NAME
 #       - name: Deploy to swarm
 #         uses: sagebind/docker-swarm-deploy-action@v2
 #         with:
@@ -62,3 +73,5 @@ jobs:
 #           # SSH public key of the server
 #           ssh_public_key: ${{ secrets.public_key }}
 #           ssh_private_key: ${{ secrets.private_key }}
+#           args: stack deploy --compose-file swarm.stack.yaml $IMAGE_NAME
+
