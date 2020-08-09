@@ -1,7 +1,6 @@
 import express from 'express'
 import userRoutes from './users/routes'
 import showRoutes from './shows/routes'
-import shared_api_secret from 'consts:shared_api_secret'
 import fetch from 'node-fetch'
 import cors from 'cors'
 import { getRSSBySlug } from './shows/logic'
@@ -13,10 +12,10 @@ app.get(`/rss/:slug`, async (req, res) => {
   res.send(await getRSSBySlug(req.params.slug))
 })
 app.use(async (req, res, next) => {
-  if (req.headers.authorization === shared_api_secret) {
-    req.isSuper = true
-    return next()
-  }
+  // if (req.headers.authorization === shared_api_secret) {
+  //   req.isSuper = true
+  //   return next()
+  // }
   req.isSuper = false
   const user = await fetch(`https://identity.freshair.radio/user`, {
     headers: {
@@ -26,8 +25,9 @@ app.use(async (req, res, next) => {
   if (user.status != 200) {
     return res.status(401).json({ error: 'Please provide a valid auth token' })
   }
-  req.userId = (await user.json()).id
-
+  let json = await user.json()
+  req.userId = json.id
+  console.log(json)
   return next()
 })
 app.use(`/users`, userRoutes)

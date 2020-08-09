@@ -12,7 +12,6 @@ import fs from 'fs'
 import path from 'path'
 const pkg = JSON.parse(fs.readFileSync(path.resolve('./package.json'), 'utf-8'))
 const external = Object.keys(pkg.dependencies || [])
-import consts from 'rollup-plugin-consts'
 import { config } from 'dotenv'
 config()
 rimraf.sync('./dist')
@@ -24,12 +23,6 @@ export default {
   },
   external: [...builtins, ...external],
   plugins: [
-    consts({
-      database: process.env.DATABASE_URL,
-      port: process.env.PORT,
-      pat: process.env.PAT,
-      shared_api_secret: process.env.SHARED_API_SECRET
-    }),
     commonjs(),
     resolve(),
     polyfill(),
