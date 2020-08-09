@@ -32,7 +32,7 @@ jobs:
           IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
 
           # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          export IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
@@ -50,7 +50,10 @@ jobs:
           docker push $IMAGE_ID:$VERSION
       - name: Deploy to Swarm
         run: |
-          export LATEST_IMAGE=$IMAGE_NAME $IMAGE_ID:${{ github.sha }}
+          export LATEST_IMAGE="$IMAGE_ID:${{ github.sha }}"
+          echo ${{ secrets.private_key }} > $HOME/.private-deploy-key
+          echo ${{ secrets.public_key }} > $HOME/.public-deploy-key
+          ssh_add $HOME/.private-deploy-key
           docker --host ssh://penalosa@deployment_host.freshair.radio stack deploy -c swarm.stack.yml
 #       - name: Deploy to swarm
 #         uses: sagebind/docker-swarm-deploy-action@v2
