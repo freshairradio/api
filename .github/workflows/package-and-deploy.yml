@@ -51,6 +51,10 @@ jobs:
           export LATEST_IMAGE="$IMAGE_ID:${{ github.sha }}"
       - name: Deploy to Swarm
         run: |
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          export IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           export LATEST_IMAGE="$IMAGE_ID:${{ github.sha }}"
           mkdir -p ~/.ssh
           echo "Host *
