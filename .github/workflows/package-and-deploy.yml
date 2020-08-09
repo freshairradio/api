@@ -10,6 +10,7 @@ on:
 env:
   # TODO: Change variable to your image's name.
   IMAGE_NAME: content-api
+  DOMAIN: api.freshair.radio
 
 jobs:
   # Push image to GitHub Packages.
@@ -77,6 +78,7 @@ jobs:
           
           ASSIGNED_PORT=`docker --log-level debug --host ${{ secrets.deploy_host }} inspect --format='{{(index (index .NetworkSettings.Ports "5000/tcp") 0).HostPort}}' $(cat /tmp/new-id)`
           
+          ssh ${{ secrets.deploy_host }} node scripts/sync-caddy.js $ASSIGNED_PORT $DOMAIN
           echo $ASSIGNED_PORT
           
           
