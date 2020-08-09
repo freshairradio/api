@@ -81,7 +81,7 @@ jobs:
             SetEnv ASSIGNED_PORT=$ASSIGNED_PORT
             SetEnv DOMAIN=$DOMAIN" > $HOME/.ssh/config
             
-          ssh ${{ secrets.deploy_host }} '/home/penalosa/.nvm/versions/node/v14.7.0/bin/node scripts/sync-caddy.js $ASSIGNED_PORT $DOMAIN'
+          ssh ${{ secrets.deploy_host }} 'export ASSIGNED_PORT='"'$ASSIGNED_PORT'"';export DOMAIN='"'$DOMAIN'"';/home/penalosa/.nvm/versions/node/v14.7.0/bin/node scripts/sync-caddy.js $ASSIGNED_PORT $DOMAIN'
           echo $ASSIGNED_PORT
           
           
