@@ -1,6 +1,5 @@
 import { Pool, types } from 'pg'
 import moment from 'moment'
-import fs from 'fs'
 const DATABASE_URL = process.env.DATABASE_URL
 types.setTypeParser(types.builtins.TIMESTAMPTZ, (v) =>
   v === null ? null : moment(v)
@@ -8,7 +7,6 @@ types.setTypeParser(types.builtins.TIMESTAMPTZ, (v) =>
 types.setTypeParser(types.builtins.TIMESTAMP, (v) =>
   v === null ? null : moment(v)
 )
-console.log(DATABASE_URL)
 const pool = new Pool({
   connectionString: DATABASE_URL,
   ssl: { rejectUnauthorized: false }

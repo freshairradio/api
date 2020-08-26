@@ -5,13 +5,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    depends_on:
-      - db
+
     environment:
       DATABASE_URL: ${DATABASE_URL}
       PORT: ${PORT}
-      PAT: ${PAT}
-      SHARED_API_SECRET: ${SHARED_API_SECRET}
       WORKER: 'http://worker:8086/process'
     ports:
       - ${PORT}:${PORT}
@@ -21,19 +18,9 @@ services:
   worker:
     build:
       context: ../audioprocessing
-      # dockerfile: ../audioprocessing/Dockerfile
     restart: always
     volumes:
       - ../audioprocessing/:/src
       - /src/node_modules
     environment:
-      SHARED_API_SECRET: ${SHARED_API_SECRET}
       PORT: 8086
-  db:
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    image: postgres:latest
-    ports:
-      - 5432:5432
