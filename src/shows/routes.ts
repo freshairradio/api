@@ -1,4 +1,4 @@
-import Router from 'express-promise-router'
+import Router from "express-promise-router";
 import {
   createShow,
   getAllForUser,
@@ -7,39 +7,40 @@ import {
   updateEpisode,
   getBySlug,
   getRSSBySlug,
-  superSetMeta,
+  setMeta,
   deleteEpisode
-} from './logic'
-const router = Router()
+} from "./logic";
+const router = Router();
 
 router.get(`/`, async (req, res) => {
-  res.send(await getAllForUser(req.userId))
-})
+  res.send(await getAllForUser(req.userId));
+});
 
 router.post(`/`, async (req, res) => {
-  res.send(await createShow(req.userId, req.body))
-})
+  res.send(await createShow(req.userId, req.body));
+});
 
 router.put(`/:identifier`, async (req, res) => {
-  res.send(await updateShow(req.params.identifier, req.body))
-})
+  res.send(await updateShow(req.params.identifier, req.body));
+});
 router.get(`/:slug`, async (req, res) => {
-  res.send(await getBySlug(req.params.slug))
-})
+  res.send(await getBySlug(req.params.slug));
+});
 
 router.post(`/:identifier/episodes`, async (req, res) => {
-  res.send(await createEpisode(req.params.identifier, req.body))
-})
+  res.send(await createEpisode(req.params.identifier, req.body));
+});
 
 router.put(`/:identifier/episodes/:eid`, async (req, res) => {
-  res.send(await updateEpisode(req.params.identifier, req.params.eid, req.body))
-})
+  res.send(
+    await updateEpisode(req.params.identifier, req.params.eid, req.body, req)
+  );
+});
 router.delete(`/:identifier/episodes/:eid`, async (req, res) => {
-  res.send(await deleteEpisode(req.params.eid))
-})
+  res.send(await deleteEpisode(req.params.eid));
+});
 router.put(`/:identifier/episodes/:eid/meta`, async (req, res) => {
-  console.log('set meta called with', req.body)
-  if (req.isSuper) res.send(await superSetMeta(req.params.eid, req.body))
-  else return res.status(401).send()
-})
-export default router
+  console.log("set meta called with", req.body);
+  res.send(await setMeta(req.params.eid, req.body));
+});
+export default router;

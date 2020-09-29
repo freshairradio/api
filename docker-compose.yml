@@ -1,4 +1,4 @@
-version: '3.6'
+version: "3.6"
 
 services:
   app:
@@ -9,18 +9,9 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
       PORT: ${PORT}
-      WORKER: 'http://worker:8086/process'
+      WORKER: "https://media-worker.freshair.radio/process"
+      SELF: http://localhost
     ports:
       - ${PORT}:${PORT}
     volumes:
       - ./:/app
-    restart: always
-  worker:
-    build:
-      context: ../audioprocessing
-    restart: always
-    volumes:
-      - ../audioprocessing/:/src
-      - /src/node_modules
-    environment:
-      PORT: 8086
