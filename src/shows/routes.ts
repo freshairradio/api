@@ -41,6 +41,6 @@ router.delete(`/:identifier/episodes/:eid`, async (req, res) => {
 });
 router.put(`/:identifier/episodes/:eid/meta`, async (req, res) => {
   console.log("set meta called with", req.body);
-  res.send(await setMeta(req.params.eid, req.body));
+  res.send(await setMeta(req.params.eid, { meta: req.body }));
 });
 export default router;

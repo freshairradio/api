@@ -202,7 +202,7 @@ export const updateEpisode = async (
 
 export const setMeta = async (
   episodeId: string,
-  { meta = {} }: BaseEpisode
+  meta: any
 ): Promise<Episode> => {
   const updated: Episode = await single(
     sql`update episodes
