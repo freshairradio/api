@@ -180,7 +180,7 @@ export const updateEpisode = async (
       },
       body: JSON.stringify({
         audio,
-        update_url: `${process.env.SELF}:${process.env.PORT}/shows/${showId}/episodes/${episodeId}/meta`
+        update_url: `${process.env.SELF}/shows/${showId}/episodes/${episodeId}/meta`
       })
     });
   }
