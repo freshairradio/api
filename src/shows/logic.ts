@@ -31,6 +31,21 @@ export const getAllForUser = async (userId: string): Promise<Show[]> => {
             `
   );
 };
+export const getAllShows = async (): Promise<Show[]> => {
+  return await multiple(
+    sql`select 
+            shows.*, 
+            coalesce(json_agg(distinct episodes) filter (where episodes.identifier is not null and episodes.meta ->> 'published' = 'true'), '[]') as episodes 
+            from shows 
+          left join link_show_episode as le 
+            on shows.identifier=le.show
+          left join episodes
+            on le.episode=episodes.identifier
+          group by
+            shows.identifier
+            `
+  );
+};
 export const getBySlug = async (slug: string): Promise<InflatedShow> => {
   return await single(
     sql`select 
@@ -49,7 +64,27 @@ export const getBySlug = async (slug: string): Promise<InflatedShow> => {
               shows.identifier`
   );
 };
-
+export const getBySlugPublished = async (
+  slug: string
+): Promise<InflatedShow> => {
+  return await single(
+    sql`select 
+              shows.*, 
+              coalesce(json_agg(distinct episodes) filter (where episodes.identifier is not null and episodes.meta ->> 'published' = 'true'), '[]') as episodes 
+              from shows 
+            left join link_show_user as l 
+              on shows.identifier=l.show
+            left join link_show_episode as le 
+              on shows.identifier=le.show
+            left join episodes
+              on le.episode=episodes.identifier
+            where
+              shows.slug=${slug}
+              
+            group by
+              shows.identifier`
+  );
+};
 export const createShow = async (
   userId: string,
   { title, description, slug, picture, meta = {} }: BaseShow
@@ -86,6 +121,19 @@ export const createShow = async (
           returning *`
   );
   return inserted;
+};
+export const claimShow = async (
+  userId: string,
+  showId: string
+): Promise<ShowLink> => {
+  const link: ShowLink = await single(
+    sql`insert into link_show_user 
+          (identifier, "user", show)
+          values 
+            (${v4()}, ${userId}, ${showId})
+          returning *`
+  );
+  return link;
 };
 export const updateShow = async (
   showId: string,

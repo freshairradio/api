@@ -8,7 +8,8 @@ import {
   getBySlug,
   getRSSBySlug,
   setMeta,
-  deleteEpisode
+  deleteEpisode,
+  claimShow
 } from "./logic";
 const router = Router();
 
@@ -25,6 +26,10 @@ router.put(`/:identifier`, async (req, res) => {
 });
 router.get(`/:slug`, async (req, res) => {
   res.send(await getBySlug(req.params.slug));
+});
+
+router.put(`/claim/:identifier`, async (req, res) => {
+  res.send(await claimShow(req.userId, req.params.identifier));
 });
 
 router.post(`/:identifier/episodes`, async (req, res) => {
