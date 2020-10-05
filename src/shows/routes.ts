@@ -1,6 +1,7 @@
 import Router from "express-promise-router";
 import {
   createShow,
+  createShowsBulk,
   getAllForUser,
   updateShow,
   createEpisode,
@@ -21,15 +22,18 @@ router.post(`/`, async (req, res) => {
   res.send(await createShow(req.userId, req.body));
 });
 
+router.post(`/bulk`, async (req, res) => {
+  res.send(await createShowsBulk(req.userId, req.body));
+});
+router.put(`/claim/:identifier`, async (req, res) => {
+  res.send(await claimShow(req.userId, req.params.identifier));
+});
+
 router.put(`/:identifier`, async (req, res) => {
   res.send(await updateShow(req.params.identifier, req.body));
 });
 router.get(`/:slug`, async (req, res) => {
   res.send(await getBySlug(req.params.slug));
-});
-
-router.put(`/claim/:identifier`, async (req, res) => {
-  res.send(await claimShow(req.userId, req.params.identifier));
 });
 
 router.post(`/:identifier/episodes`, async (req, res) => {

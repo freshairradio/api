@@ -122,6 +122,12 @@ export const createShow = async (
   );
   return inserted;
 };
+export const createShowsBulk = async (
+  userId: string,
+  shows: BaseShow[]
+): Promise<Show[]> => {
+  return await Promise.all(shows.map(async (s) => createShow(userId, s)));
+};
 export const claimShow = async (
   userId: string,
   showId: string
