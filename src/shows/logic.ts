@@ -270,6 +270,15 @@ export const setMeta = async (
   let episode = show.episodes.find((e) => e.identifier == episodeId);
 
   if (show.meta.day && show.meta.time && episode?.scheduling.week) {
+    console.log("Scheduling episode", {
+      url: meta.audio,
+      time: `${moment(episode.scheduling.week)
+        .add(show.meta.day + 1, "day")
+        .format("YYYY-MM-DD")} ${show.meta.time}:00`,
+      length: meta.length,
+      name: episode?.title ?? "Episode x",
+      category: show.title
+    });
     try {
       fetch(`https://ctrl.freshair.radio/schedule`, {
         method: "POST",
