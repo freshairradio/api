@@ -64,6 +64,27 @@ export const getBySlug = async (slug: string): Promise<InflatedShow> => {
               shows.identifier`
   );
 };
+
+export const getShowById = async (
+  identifier: string
+): Promise<InflatedShow> => {
+  return await single(
+    sql`select 
+              shows.*, 
+              coalesce(json_agg(distinct episodes) filter (where episodes.identifier is not null), '[]') as episodes 
+              from shows 
+            left join link_show_user as l 
+              on shows.identifier=l.show
+            left join link_show_episode as le 
+              on shows.identifier=le.show
+            left join episodes
+              on le.episode=episodes.identifier
+            where
+              shows.identifier=${identifier}
+            group by
+              shows.identifier`
+  );
+};
 export const getBySlugPublished = async (
   slug: string
 ): Promise<InflatedShow> => {
@@ -175,6 +196,7 @@ export const createEpisode = async (
     description,
     slug,
     audio,
+    scheduling: {},
     meta: { published: false },
     identifier: v4(),
     updated: moment(),
@@ -261,12 +283,12 @@ export const updateEpisode = async (
 };
 
 export const setMeta = async (
-  showSlug: string,
+  showId: string,
   episodeId: string,
   meta: any,
   req: any
 ): Promise<Episode> => {
-  let show = await getBySlug(showSlug);
+  let show = await getShowById(showId);
   let episode = show.episodes.find((e) => e.identifier == episodeId);
 
   if (show.meta.day && show.meta.time && episode?.scheduling.week) {
