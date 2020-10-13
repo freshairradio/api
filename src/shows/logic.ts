@@ -295,7 +295,7 @@ export const setMeta = async (
     console.log("Scheduling episode", {
       url: meta.audio,
       time: `${moment(episode.scheduling.week)
-        .add(show.meta.day + 1, "day")
+        .add(show.meta.day + 2, "day")
         .format("YYYY-MM-DD")} ${show.meta.time}:00`,
       length: meta.length,
       name: episode?.title ?? "Episode x",
