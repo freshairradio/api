@@ -31,6 +31,7 @@ const bootstrap = async () => {
         slug text unique,
         audio text,
         meta jsonb,
+        scheduling jsonb,
         created timestamp,
         updated timestamp
     );

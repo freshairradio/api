@@ -213,7 +213,7 @@ export const deleteEpisode = async (episodeId: string): Promise<Episode> => {
 export const updateEpisode = async (
   showId: string,
   episodeId: string,
-  { title, description, slug, audio, meta = {} }: BaseEpisode,
+  { title, description, slug, audio, meta = {}, scheduling = {} }: BaseEpisode,
   req: any
 ): Promise<Episode> => {
   const currentEpisode: Episode = await single(
@@ -251,7 +251,8 @@ export const updateEpisode = async (
               slug=${slug},
               audio=${newAudio},
               updated=${moment()},
-              meta=${newMeta}
+              meta=${newMeta},
+              scheduling=${scheduling}
             where
               episodes.identifier=${episodeId}
             returning *`
@@ -260,9 +261,36 @@ export const updateEpisode = async (
 };
 
 export const setMeta = async (
+  showSlug: string,
   episodeId: string,
-  meta: any
+  meta: any,
+  req: any
 ): Promise<Episode> => {
+  let show = await getBySlug(showSlug);
+  let episode = show.episodes.find((e) => e.identifier == episodeId);
+
+  if (show.meta.day && show.meta.time && episode?.scheduling.week) {
+    try {
+      fetch(`https://ctrl.freshair.radio/schedule`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: req.headers.authorization
+        },
+        body: JSON.stringify({
+          url: meta.audio,
+          time: `${moment(episode.scheduling.week)
+            .add(show.meta.day + 1, "day")
+            .format("YYYY-MM-DD")} ${show.meta.time}:00`,
+          length: meta.length,
+          name: episode?.title ?? "Episode x",
+          category: show.title
+        })
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
   const updated: Episode = await single(
     sql`update episodes
             set 

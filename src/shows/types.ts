@@ -20,6 +20,7 @@ export interface BaseEpisode {
   audio: string;
   slug: string;
   meta: any;
+  scheduling: any;
 }
 export interface Episode extends BaseEpisode {
   identifier: string;
