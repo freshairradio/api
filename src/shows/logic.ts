@@ -313,7 +313,7 @@ export const setMeta = async (
           time: `${moment(episode.scheduling.week)
             .add(show.meta.day + 1, "day")
             .format("YYYY-MM-DD")} ${show.meta.time}:00`,
-          length: meta.length,
+          length: `${meta.length}`,
           name: episode?.title ?? "Episode x",
           category: show.title
         })
