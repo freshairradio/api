@@ -260,7 +260,10 @@ export const updateEpisode = async (
         Authorization: req.headers.authorization
       },
       body: JSON.stringify({
-        audio,
+        audio: audio.replace(
+          "cdn.freshair.radio",
+          "freshair.nyc3.digitaloceanspaces.com"
+        ),
         update_url: `${process.env.SELF}/shows/${showId}/episodes/${episodeId}/meta`
       })
     });
