@@ -378,7 +378,9 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
             description: description,
             url: `https://freshair.radio/shows/${slug}#episode-${epIdent}`,
             enclosure: {
-              url: meta.audio,
+              url: meta.audio.endsWith("mp3")
+                ? meta.audio
+                : `${meta.audio}.mp3`,
               type: "audio/mpeg",
               size: Math.round(meta.length)
             }, // optional enclosure
