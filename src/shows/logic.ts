@@ -344,7 +344,8 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
     description,
     feed_url: `https://api.freshair.radio/rss/${slug}`,
     site_url: `https://freshair.radio/shows/${slug}`,
-    image_url: picture || "https://members.freshair.radio/default-show.png",
+    image_url:
+      `${picture}.jpg` || "https://members.freshair.radio/default-show.png",
     author: `Freshair Radio`,
     language: "en",
     ttl: "60",
@@ -353,7 +354,8 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
     itunesOwner: { name: "Freshair", email: "manager@freshair.radio" },
     itunesExplicit: false,
     itunesCategory: [meta.category].filter(Boolean).map((c) => ({ text: c })),
-    itunesImage: picture || "https://members.freshair.radio/default-show.png"
+    itunesImage:
+      `${picture}.jpg` || "https://members.freshair.radio/default-show.png"
   });
   await Promise.all(
     episodes
