@@ -350,7 +350,7 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
     ttl: "60",
     itunesAuthor: `Freshair Radio`,
     itunesSummary: description,
-    itunesOwner: { name: "Freshair", email: "manager@freshair.org.uk" },
+    itunesOwner: { name: "Freshair", email: "manager@freshair.radio" },
     itunesExplicit: false,
     itunesCategory: [meta.category].filter(Boolean).map((c) => ({ text: c })),
     itunesImage: picture || "https://members.freshair.radio/default-show.png"
