@@ -294,7 +294,11 @@ export const setMeta = async (
   let show = await getShowById(showId);
   let episode = show.episodes.find((e) => e.identifier == episodeId);
 
-  if (show.meta.day && show.meta.time && episode?.scheduling.week) {
+  if (
+    show.meta.day !== undefined &&
+    show.meta.time &&
+    episode?.scheduling.week
+  ) {
     console.log("Scheduling episode", {
       url: meta.audio,
       time: `${moment(episode.scheduling.week)
