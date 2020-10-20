@@ -7,6 +7,7 @@ import {
   EpisodeLink,
   InflatedShow
 } from "./types";
+const format = require("xml-formatter");
 import Podcast from "podcast";
 import { multiple, sql, single } from "../db";
 import { v4 } from "uuid";
@@ -407,5 +408,5 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
       )
   );
 
-  return feed.buildXml();
+  return format(feed.buildXml());
 };
