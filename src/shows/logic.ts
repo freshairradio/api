@@ -357,7 +357,10 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
     itunesSummary: description,
     itunesOwner: { name: "Freshair", email: "manager@freshair.radio" },
     itunesExplicit: false,
-    itunesCategory: [meta.category].filter(Boolean).map((c) => ({ text: c })),
+    itunesCategory: meta.category
+      .split(",")
+      .filter(Boolean)
+      .map((c) => ({ text: c })),
     itunesImage: `https://freshair.nyc3.digitaloceanspaces.com/rssfeed/${slug}.jpg`
   });
   await Promise.all(
