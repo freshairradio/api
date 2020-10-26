@@ -347,9 +347,9 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
   const feed = new Podcast({
     title: title,
     description,
-    feed_url: `https://freshair.nyc3.cdn.digitaloceanspaces.com/rssfeed/${slug}.xml`,
+    feed_url: `https://freshair.nyc3.digitaloceanspaces.com/rssfeed/${slug}.xml`,
     site_url: `https://freshair.radio/shows/${slug}`,
-    image_url: `https://freshair.nyc3.cdn.digitaloceanspaces.com/rssfeed/${slug}.jpg`,
+    image_url: `https://freshair.nyc3.digitaloceanspaces.com/rssfeed/${slug}.jpg`,
     author: `Freshair Radio`,
     language: "en",
     ttl: "60",
@@ -358,7 +358,7 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
     itunesOwner: { name: "Freshair", email: "manager@freshair.radio" },
     itunesExplicit: false,
     itunesCategory: [meta.category].filter(Boolean).map((c) => ({ text: c })),
-    itunesImage: `https://freshair.nyc3.cdn.digitaloceanspaces.com/rssfeed/${slug}.jpg`
+    itunesImage: `https://freshair.nyc3.digitaloceanspaces.com/rssfeed/${slug}.jpg`
   });
   await Promise.all(
     episodes
