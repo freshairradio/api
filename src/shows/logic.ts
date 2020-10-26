@@ -349,11 +349,7 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
     description,
     feed_url: `https://api.freshair.radio/rss/${slug}`,
     site_url: `https://freshair.radio/shows/${slug}`,
-    image_url:
-      `${picture.replace(
-        "cdn.freshair.radio",
-        "freshair.nyc3.cdn.digitaloceanspaces.com"
-      )}` || "https://members.freshair.radio/default-show.png",
+    image_url: `https://imgproxy.freshair.radio/signature/fill/2000/2000/sm/1/plain/${picture}@jpg`,
     author: `Freshair Radio`,
     language: "en",
     ttl: "60",
@@ -362,11 +358,7 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
     itunesOwner: { name: "Freshair", email: "manager@freshair.radio" },
     itunesExplicit: false,
     itunesCategory: [meta.category].filter(Boolean).map((c) => ({ text: c })),
-    itunesImage:
-      `${picture.replace(
-        "cdn.freshair.radio",
-        "freshair.nyc3.cdn.digitaloceanspaces.com"
-      )}` || "https://members.freshair.radio/default-show.png"
+    itunesImage: `https://imgproxy.freshair.radio/signature/fill/2000/2000/sm/1/plain/${picture}@jpg`
   });
   await Promise.all(
     episodes
@@ -389,10 +381,7 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
             description: description,
             url: `https://freshair.radio/shows/${slug}#episode-${epIdent}`,
             enclosure: {
-              url: (meta.audio.endsWith("mp3")
-                ? meta.audio
-                : `${meta.audio}.mp3`
-              ).replace(
+              url: meta.audio.replace(
                 "cdn.freshair.radio",
                 "freshair.nyc3.cdn.digitaloceanspaces.com"
               ),
