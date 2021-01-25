@@ -13,7 +13,11 @@ app.get(`/rss/:slug`, async (req, res) => {
   res.send(await getRSSBySlug(req.params.slug));
 });
 app.get(`/public/shows/`, async (req, res) => {
-  res.send(await getAllShows());
+  res.send(
+    (await getAllShows()).filter(
+      (s) => s.meta && s.meta.active && s.meta.active.includes("2020-21-sem-2")
+    )
+  );
 });
 
 app.get(`/public/shows/:slug`, async (req, res) => {
@@ -30,7 +34,7 @@ app.use(async (req, res, next) => {
   }
   let json = await user.json();
   req.userId = json.id;
-  console.log(json);
+  req.user = json;
   return next();
 });
 app.use(`/shows`, showRoutes);
