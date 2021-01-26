@@ -357,7 +357,7 @@ export const getRSSBySlug = async (slug: string): Promise<string> => {
     itunesSummary: description,
     itunesOwner: { name: "Freshair", email: "manager@freshair.radio" },
     itunesExplicit: false,
-    itunesCategory: meta.category
+    itunesCategory: (meta.category || "")
       .split(",")
       .filter(Boolean)
       .map((c) => ({ text: c })),
