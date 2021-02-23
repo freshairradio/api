@@ -239,6 +239,7 @@ export const updateEpisode = async (
   { title, description, slug, audio, meta = {}, scheduling = {} }: BaseEpisode,
   req: any
 ): Promise<Episode> => {
+  const show = await getShowById(showId)
   const currentEpisode: Episode = await single(
     sql`select * from episodes where episodes.identifier=${episodeId}`
   );
@@ -261,6 +262,7 @@ export const updateEpisode = async (
         Authorization: req.headers.authorization
       },
       body: JSON.stringify({
+        show: show.slug,
         audio: audio.replace(
           "cdn.freshair.radio",
           "freshair.nyc3.digitaloceanspaces.com"
